@@ -186,7 +186,7 @@
   
   <header>
     <h1>FOUR AGAINST DARKNESS</h1>
-    <div class="subtitle">Classes &amp; Magic — A Player's Wiki · v5</div>
+    <div class="subtitle">Classes &amp; Magic — A Player's Wiki · v5.1</div>
   </header>
   
   <div id="home-view">
@@ -380,7 +380,12 @@ function renderCodeBadges(codes) {
   return parts.map(p => '<span class="code-badge" title="' + escapeHtml(TH_CODES[p] || '') + '">' + escapeHtml(p) + '</span>').join(' ');
 }
 
+function slugifyId(s) {
+  return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
 function entryHTML(item, type) {
+  if (!item.id) item.id = type + '-' + slugifyId(item.name);
   const id = item.id;
   let metaHTML = '';
   if (type === 'class') {
