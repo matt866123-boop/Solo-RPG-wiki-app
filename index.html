@@ -731,6 +731,26 @@ function buildSearchIndex() {
   return items;
 }
 
+// Ensure every entry has a unique DOM id (cantrips have no id field; some
+// spells share an id, e.g. the Druid and Undine "Water Jet" both being
+// "spell-water-jet"). Run before buildSearchIndex so search links match.
+(function assignUniqueIds() {
+  const slug = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  for (const c of DATA.cantrips) {
+    if (!c.id) c.id = 'cantrip-' + slug(c.name);
+  }
+  const seen = new Map();
+  for (const s of DATA.spells) {
+    const base = s.id || 'spell-' + slug(s.name);
+    if (seen.has(base)) {
+      s.id = base + '-' + slug(s.source) + '-' + slug(s.tier);
+    } else {
+      s.id = base;
+    }
+    seen.set(base, true);
+  }
+})();
+
 const searchIndex = buildSearchIndex();
 
 searchBar.addEventListener('input', (e) => {
