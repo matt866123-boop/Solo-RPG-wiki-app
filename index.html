@@ -235,7 +235,7 @@
   
   <header>
     <h1>FOUR AGAINST DARKNESS</h1>
-    <div class="subtitle">Classes &amp; Magic — A Player's Wiki · v5.2</div>
+    <div class="subtitle">Classes &amp; Magic — A Player's Wiki · v5.3</div>
   </header>
   
   <div id="home-view">
@@ -1470,6 +1470,24 @@ DATA.patrons.push(
     }
   }
 );
+// Backfill the 4AD Dwarf class trait table — present in raw_body but
+// never parsed into parsed.trait_table.
+(function backfillDwarfTraitTable() {
+  const dwarf = DATA.classes.find(c => c.name === 'Dwarf' && c.source === '4AD');
+  if (!dwarf || !dwarf.parsed || dwarf.parsed.trait_table) return;
+  dwarf.parsed.trait_table = {
+    title: 'Dwarf Traits Table (Pick 1 or roll d6)',
+    entries: [
+      { num: 1, name: 'Axe Mastery', description: 'Gain +1 on Attack rolls with an axe in melee. You may also throw an axe as a Ranged Slashing weapon, adding +L to the Attack roll. Thrown axes are recovered after the combat. However, mundane, non-masterwork axes rolling a 1 when thrown are lost or broken beyond repair.' },
+      { num: 2, name: 'Underground Explorer', description: 'Add +1 on Search rolls in dungeons and caverns.' },
+      { num: 3, name: 'Gold Nose', description: 'Once per adventure, when you find a random amount of gp or a gem with variable value, you find the maximum amount. E.g., if the Treasure entry says 2d6 gp, you find 12 gp.' },
+      { num: 4, name: 'Stubborn Resolve', description: 'Once per adventure, you may do one of the following: reroll a failed Save vs. poison or magic, reroll a failed Defense, or avoid gaining 1 Madness.' },
+      { num: 5, name: 'Gem Appraiser', description: 'When selling gems or jewels or using them as a Bribe, increase their resale value by 30%, rounded up, not 20%.' },
+      { num: 6, name: 'Tough as Stone', description: 'Reduce damage by 1 from the first physical attack you receive in every combat. This may bring damage to zero.' },
+    ],
+  };
+})();
+
 // Ensure every entry has a unique DOM id (cantrips have no id field; some
 // spells share an id, e.g. the Druid and Undine "Water Jet" both being
 // "spell-water-jet"). Run before buildSearchIndex so search links match.
