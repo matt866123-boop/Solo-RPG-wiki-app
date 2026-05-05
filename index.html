@@ -235,7 +235,7 @@
   
   <header>
     <h1>FOUR AGAINST DARKNESS</h1>
-    <div class="subtitle">Classes &amp; Magic — A Player's Wiki · v5.5</div>
+    <div class="subtitle">Classes &amp; Magic — A Player's Wiki · v5.6</div>
   </header>
   
   <div id="home-view">
@@ -1486,6 +1486,39 @@ DATA.patrons.push(
       { num: 6, name: 'Tough as Stone', description: 'Reduce damage by 1 from the first physical attack you receive in every combat. This may bring damage to zero.' },
     ],
   };
+})();
+
+// Backfill the Cambion class — the upstream PDF extraction smeared
+// Paladin and SSS Arcane Tanner content into the Cambion entry.
+(function backfillCambion() {
+  const c = DATA.classes.find(x => x.name === 'Cambion' && x.source === '4ATN');
+  if (!c || !c.parsed) return;
+  c.parsed = {
+    flavor: ["Cambions (or half-fiends) are the unnatural offspring of hellspawn and mortals, usually demonologists. Their appearances and their morals vary from disturbing (three eyes, purple skin, horns) to disconcerting (face on torso, conjoined twin) to grotesque (tentacle head, countless misshapen limbs)."],
+    abilities: [
+      { name: "Traits", description: "Cambions are part fiend, part mortal — combat capable, magic capable, and tied to the Netherworld.", bullets: [
+        "Adds ½ level to Attack rolls and counts as a warrior for the purpose of saves (any save bonus that warriors get, the cambion gets too).",
+        "Adds full level to spellcasting rolls like a wizard, including spells cast from a scroll. Adds +L to Madness saves and may re-roll failed Madness checks.",
+        "Needs no food in the Netherworld.",
+        "Subtracts ½ level from the reactions of hellspawn.",
+        "May spend 2 XP checks to gain a random Abominable Gift from the Red Die table or the Black Die table (maximum one per table). Re-roll results of Bhaal (special ability “1-3” only), Gürgun, Dhaur, Morkath, and Azach. Each Abominable Gift causes a +2 reaction penalty against creatures not from the Netherworld (undead excluded)."
+      ]},
+      { name: "Spells", description: "A cambion may cast a single Netherworld spell per level per adventure, but not if wearing heavy armor or using a shield. They can only cast Netherworld spells." },
+      { name: "Restrictions", description: "A cambion cannot use holy water, and if they have 3 or more Madness points they cannot be resurrected or Blessed. The mightier a cambion, the more frightening his appearance: he subtracts his level from persuasion and other social saves and challenges." },
+      { name: "Cambion Expert Skills", description: "Cambions have access to the following Expert skills: Brawler, Deadly Strike, Dying Action, Gladiator, Impervious, Lesser Necromancy, Stabbing Attack, Sworn Enemy, Terrifying Savagery, Withstand Pain, Whirlwind of Steel." },
+    ],
+    stat_block: [
+      ["Armor allowed", "Shield, light armor, heavy armor."],
+      ["Weapons allowed", "Any, but not ranged weapons."],
+      ["Starting equipment", "Light armor, hand weapon, shield, horrible keepsake."],
+      ["Starting wealth", "2d6 gp (in meat)."],
+      ["Life", "4 + level. A 1st-level cambion has 5 Life."],
+    ],
+    trait_table: null,
+  };
+  c.raw_body = "Cambion\n" + c.parsed.flavor[0] + "\n\n" +
+    c.parsed.abilities.map(a => a.name + ": " + (a.description || "") + (a.bullets ? "\n- " + a.bullets.join("\n- ") : "")).join("\n\n") + "\n\n" +
+    c.parsed.stat_block.map(([k,v]) => k + ": " + v).join("\n");
 })();
 
 // Ensure every entry has a unique DOM id (cantrips have no id field; some
